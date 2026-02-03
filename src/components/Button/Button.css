@@ -18,6 +18,12 @@
   transform: scale(0.98);
 }
 
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+}
+
 .button-primary {
   background-color: transparent;
   color: rgb(50, 255, 73);

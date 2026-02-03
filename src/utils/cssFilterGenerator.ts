@@ -338,23 +338,21 @@ export const generateFilterWithRetry = (
   options?: FilterOptions
 ): FilterResultWithRetry => {
   const maxLoss = options?.maxLoss ?? 5;
-  const maxAttempts = options?.maxAttempts ?? 10;
+  // Ensure at least 1 attempt to guarantee a result
+  const maxAttempts = Math.max(1, options?.maxAttempts ?? 10);
 
-  let best: FilterResult | null = null;
-  let attempts = 0;
+  let best: FilterResult = generateFilter(color, options);
+  let attempts = 1;
 
-  for (let i = 0; i < maxAttempts; i++) {
+  for (let i = 1; i < maxAttempts && best.loss > maxLoss; i++) {
     attempts++;
     const result = generateFilter(color, options);
-    if (!best || result.loss < best.loss) {
+    if (result.loss < best.loss) {
       best = result;
-    }
-    if (best.loss <= maxLoss) {
-      break;
     }
   }
 
-  return { ...best!, attempts };
+  return { ...best, attempts };
 };
 
 export default generateFilter;

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button, Input, Modal } from './components';
+import { BREAKPOINTS, COLORS, FILTER_DEFAULTS, TIMING } from './constants';
 import { generateFilterWithRetry } from './utils';
 import type { FilterResultWithRetry } from './utils';
 import './App.css';
@@ -10,7 +11,7 @@ import ReactLogo from './assets/react.svg';
 
 type FormState = {
   color: string;
-  sourceType: 'hexidecimal' | 'rgb';
+  sourceType: 'hexadecimal' | 'rgb';
 };
 
 type FilterState = {
@@ -21,38 +22,46 @@ type FilterState = {
 /** The main app component. */
 function App() {
   const [formState, setFormState] = useState<FormState>({
-    color: '#61dafb',
-    sourceType: 'hexidecimal',
+    color: COLORS.reactBlue,
+    sourceType: 'hexadecimal',
   });
   const [manualChange, setManualChange] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [filterState, setFilterState] = useState<FilterState | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const resultsRef = useRef<HTMLDivElement>(null);
 
   const handleSubmit = useCallback(() => {
     setError(null);
-    try {
-      const result = generateFilterWithRetry(formState.color, {
-        maxLoss: 1,
-        maxAttempts: 100,
-        forceBlack: true,
-      });
-      setFilterState({
-        result,
-        inputColor: formState.color,
-      });
-      // Scroll to results on mobile
-      if (window.innerWidth <= 480) {
-        setTimeout(() => {
-          resultsRef.current?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
+    setIsLoading(true);
+
+    // Use setTimeout to allow UI to update before CPU-intensive calculation
+    setTimeout(() => {
+      try {
+        const result = generateFilterWithRetry(formState.color, {
+          maxLoss: FILTER_DEFAULTS.maxLoss,
+          maxAttempts: FILTER_DEFAULTS.maxAttempts,
+          forceBlack: true,
+        });
+        setFilterState({
+          result,
+          inputColor: formState.color,
+        });
+        // Scroll to results on mobile
+        if (window.innerWidth <= BREAKPOINTS.mobile) {
+          setTimeout(() => {
+            resultsRef.current?.scrollIntoView({ behavior: 'smooth' });
+          }, TIMING.scrollDelay);
+        }
+      } catch (e) {
+        setFilterState(null);
+        setError(e instanceof Error ? e.message : 'An unexpected error occurred');
+      } finally {
+        setIsLoading(false);
       }
-    } catch (e) {
-      setFilterState(null);
-      setError(e instanceof Error ? e.message : 'An unexpected error occurred');
-    }
+    }, 0);
   }, [formState]);
 
   // Auto-update source type based on input, only if it wasn't manually changed
@@ -63,7 +72,7 @@ function App() {
       setFormState((prev) => (prev.sourceType === 'rgb' ? prev : { ...prev, sourceType: 'rgb' }));
     } else if (formState.color.indexOf('#') !== -1) {
       setFormState((prev) =>
-        prev.sourceType === 'hexidecimal' ? prev : { ...prev, sourceType: 'hexidecimal' }
+        prev.sourceType === 'hexadecimal' ? prev : { ...prev, sourceType: 'hexadecimal' }
       );
     }
   }, [formState]);
@@ -96,20 +105,20 @@ function App() {
           value={formState.color}
           onChange={(v) => {
             setManualChange(true);
-            setFormState({ ...formState, color: v, sourceType: 'hexidecimal' });
+            setFormState({ ...formState, color: v, sourceType: 'hexadecimal' });
           }}
         />
       </div>
       <fieldset className='radio-group'>
         <legend>Select the source color type:</legend>
         <Input
-          id='radio-hexidecimal'
-          checked={formState.sourceType === 'hexidecimal'}
-          label='Hexidecimal'
+          id='radio-hexadecimal'
+          checked={formState.sourceType === 'hexadecimal'}
+          label='Hexadecimal'
           name='source-type'
           onChange={() => {
             setManualChange(true);
-            setFormState({ ...formState, sourceType: 'hexidecimal' });
+            setFormState({ ...formState, sourceType: 'hexadecimal' });
           }}
           type='radio'
         />
@@ -125,13 +134,21 @@ function App() {
           type='radio'
         />
       </fieldset>
-      <Button onClick={handleSubmit}>submit</Button>
+      <Button onClick={handleSubmit} disabled={isLoading}>
+        {isLoading ? 'generating...' : 'submit'}
+      </Button>
       <div className='results-container' ref={resultsRef}>
         <div className='color-squares'>
           <div className='color-square'>
             <p className='color-square-text'>Target</p>
             <div
               className='raw-color'
+              role='img'
+              aria-label={
+                filterState
+                  ? `Target color preview: RGB(${filterState.result.rgb.r}, ${filterState.result.rgb.g}, ${filterState.result.rgb.b})`
+                  : 'No color selected'
+              }
               style={
                 filterState
                   ? {
@@ -146,7 +163,11 @@ function App() {
               <img
                 src={ReactLogo}
                 className='react-svg'
-                alt='React logo'
+                alt={
+                  filterState
+                    ? `React logo with CSS filter applied to match target color`
+                    : 'React logo (no filter applied)'
+                }
                 style={filterState ? { filter: filterState.result.filterRaw } : undefined}
               />
             </div>
@@ -161,7 +182,7 @@ function App() {
               onClick={() => {
                 navigator.clipboard.writeText(filterState.result.filter);
                 setCopied(true);
-                setTimeout(() => setCopied(false), 1500);
+                setTimeout(() => setCopied(false), TIMING.copiedFeedbackDuration);
               }}
             >
               {copied ? 'copied!' : 'copy'}
