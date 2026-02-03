@@ -1,0 +1,52 @@
+.button {
+  border-radius: 0.25rem;
+  border: none;
+  cursor: pointer;
+  font-size: 4rem;
+  font-weight: bold;
+  padding: 1rem 2rem;
+  text-transform: lowercase;
+  transition: transform 0.1s ease;
+}
+
+.button:hover {
+  transform: scale(1.02);
+}
+
+.button:active {
+  transform: scale(0.98);
+}
+
+.button-primary {
+}
+
+.button-secondary {
+}
+
+@keyframes colorShift {
+  0% {
+    color: rgb(255, 0, 0);
+  }
+  33% {
+    color: rgb(0, 255, 0);
+  }
+  66% {
+    color: rgb(0, 0, 255);
+  }
+  100% {
+    color: rgb(255, 0, 0);
+  }
+}
+
+.button-funky {
+  background-color: transparent;
+  font-size: 0.8rem;
+  text-decoration: underline;
+
+  /* Animate between colors. */
+  transition: color 0.3s ease;
+  animation-name: colorShift;
+  animation-duration: 6s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}

@@ -1,0 +1,40 @@
+.input-container {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.text-input-container {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+
+.text-input {
+  font-size: 1.2rem;
+  height: 2.5rem;
+  min-width: 200px;
+  width: 15vw;
+}
+
+.text-input::placeholder {
+  font-family: "Sixtyfour", sans-serif;
+  font-size: 0.75rem;
+}
+
+.toggle-input-container {
+  cursor: pointer;
+}
+
+.toggle-input {
+  cursor: inherit;
+  accent-color: #fff;
+}
+
+.input-label {
+  cursor: inherit;
+  font-size: 1.2rem;
+}
+
+/* .input-label.text-input-label {
+} */
