@@ -9,7 +9,7 @@
 }
 
 .modal {
-  background: #cacaca;
+  background: rgba(228, 227, 227, 0.9);
   border-radius: 0.25rem;
   display: flex;
   flex-direction: column;
@@ -45,7 +45,7 @@
 }
 
 .modal .button:hover {
-  -webkit-text-stroke: 2px rgba(0, 0, 0, .65);
+  -webkit-text-stroke: 2px rgba(0, 0, 0, 0.65);
 }
 
 @media only screen and (max-width: 768px) {

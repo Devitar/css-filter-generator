@@ -5,21 +5,45 @@
 }
 
 .text-input-container {
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
+  position: relative;
+  width: fit-content;
 }
 
 .text-input {
   font-size: 1.2rem;
   height: 2.5rem;
-  min-width: 200px;
-  width: 15vw;
+  width: 200px;
 }
 
 .text-input::placeholder {
-  font-family: "Sixtyfour", sans-serif;
+  font-family: 'Sixtyfour', sans-serif;
   font-size: 0.75rem;
+}
+
+.color-input-container {
+  gap: 0.5rem;
+}
+
+.color-input {
+  border: none;
+  cursor: pointer;
+  height: 2.5rem;
+  padding: 0;
+  width: 2.5rem;
+}
+
+.color-input::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.color-input::-webkit-color-swatch {
+  border: 2px solid #fff;
+  border-radius: 4px;
+}
+
+.color-input::-moz-color-swatch {
+  border: 2px solid #fff;
+  border-radius: 4px;
 }
 
 .toggle-input-container {
@@ -36,5 +60,21 @@
   font-size: 1.2rem;
 }
 
-/* .input-label.text-input-label {
-} */
+.text-input-label {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .text-input-label {
+    white-space: normal;
+    width: max-content;
+    max-width: 80vw;
+  }
+  .input-label {
+    font-size: 1rem;
+  }
+}

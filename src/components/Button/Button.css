@@ -3,7 +3,7 @@
   border: none;
   cursor: pointer;
   font-family: inherit;
-  font-size: 4rem;
+  font-size: 2rem;
   font-weight: bold;
   padding: 1rem 2rem;
   text-transform: lowercase;
@@ -20,6 +20,7 @@
 
 .button-primary {
   background-color: transparent;
+  color: rgb(50, 255, 73);
 }
 
 .button-secondary {
@@ -52,4 +53,13 @@
   animation-duration: 6s;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
+}
+
+@media (max-width: 480px) {
+  .button {
+    font-size: 1.5rem;
+  }
+  .button-funky {
+    font-size: 0.7rem;
+  }
 }
