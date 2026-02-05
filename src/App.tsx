@@ -80,7 +80,7 @@ function App() {
   return (
     <div className='app-container'>
       <div className='header-group'>
-        <h1 className='main-header'>CSS Filter Generator</h1>
+        <h1 className='main-header'>SVG Recolor Tool</h1>
         <Button
           variant='funky'
           className='app-description-button'
